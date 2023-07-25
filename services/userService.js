@@ -8,8 +8,9 @@ const registerUser = async (name, email, password) => {
     if (existingUser) {
       throw new AppError("Email already registered", 400);
     }
-    // Create a new user with the hashed password
-    const newUser = new User({ name, email, password: hashedPassword });
+
+    // Create a new
+    const newUser = new User({ name, email, password });
     const savedUser = await newUser.save();
     delete savedUser.password;
 

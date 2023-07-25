@@ -1,6 +1,10 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const {
+  globalErrorHandler,
+  catchAllUndefinedRoutes,
+} = require("../middleware/common/errorHandler");
 
 const app = express();
 dotenv.config();
@@ -15,24 +19,10 @@ app.use(express.json());
 
 // Define routes
 
-// Define a catch-all route for handling undefined routes
-app.use("*", (req, res) => {
-  res.status(404).json({
-    message: `Can't find ${req.originalUrl} this route`,
-  });
-});
+// handling undefined routes
+app.use(catchAllUndefinedRoutes);
 
-// Global error handler middleware
-app.use((err, req, res, next) => {
-  err.status = err.status || "fail";
-  err.statusCode = err.statusCode || 500;
-
-  // Send a response with the error details
-  res.status(err.statusCode).json({
-    status: err.status,
-    message: err.message,
-    stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
-  });
-});
+// Global error handler
+app.use(globalErrorHandler);
 
 module.exports = app;

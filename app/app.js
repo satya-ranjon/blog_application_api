@@ -1,7 +1,6 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
-const { json } = require("body-parser");
 
 const app = express();
 dotenv.config();
@@ -12,7 +11,9 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use(json());
+app.use(express.json());
+
+// Define routes
 
 // Define a catch-all route for handling undefined routes
 app.use("*", (req, res) => {

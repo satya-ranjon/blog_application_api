@@ -5,6 +5,7 @@ const {
   globalErrorHandler,
   catchAllUndefinedRoutes,
 } = require("../middleware/common/errorHandler");
+const userRouter = require("../routers/userRouter");
 
 const app = express();
 dotenv.config();
@@ -18,6 +19,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 // Define routes
+app.use("/api/users/", userRouter);
 
 // handling undefined routes
 app.use(catchAllUndefinedRoutes);

@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { hashPassword } = require("../utils/hashPassword");
 
 const userSchema = new mongoose.Schema(
   {
@@ -15,8 +16,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      trim: true,
       lowercase: true,
+      trim: true,
+      validate: {
+        validator: function (value) {
+          return /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(value);
+        },
+        message: "Invalid email format",
+      },
     },
     password: {
       type: String,
@@ -38,6 +45,17 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+userSchema.pre("save", async (next) => {
+  if (!this.isModified("password")) {
+    return next();
+  }
+  try {
+    this.password = await hashPassword(this.password);
+  } catch (err) {
+    next(err);
+  }
+});
 
 const User = mongoose.model("User", userSchema);
 

@@ -6,6 +6,10 @@ const hashPassword = async (password) => {
   return await bcrypt.hash(password, saltRounds);
 };
 
+const passwordCompere = async (password, hashPassword) => {
+  return await bcrypt.compare(password, hashPassword);
+};
+
 const generateAuthToken = (userId) => {
   const token = jwt.sign({ _id: userId }, process.env.JWT_SECRET, {
     expiresIn: "30h",
@@ -13,4 +17,4 @@ const generateAuthToken = (userId) => {
   return token;
 };
 
-module.exports = { generateAuthToken, hashPassword };
+module.exports = { generateAuthToken, hashPassword, passwordCompere };

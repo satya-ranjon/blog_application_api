@@ -24,13 +24,13 @@ const loginUser = async (req, res, next) => {
     const { email, password } = req.body;
 
     // Call the userService.loginUser function to handle user login
-    const token = await userService.loginUser(email, password);
+    const user = await userService.loginUser(email, password);
 
     // Send a success response with the generated token
     res.status(200).json({
       status: "success",
       message: "User logged in successfully!",
-      token,
+      ...user,
     });
   } catch (err) {
     // Pass the error to the next middleware for centralized error handling

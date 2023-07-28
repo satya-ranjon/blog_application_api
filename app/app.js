@@ -11,14 +11,11 @@ const userRouter = require("../routers/userRouter");
 const app = express();
 dotenv.config();
 
-// Allow requests only from specified origins
+// Middleware
 const corsOptions = {
   origin: ["http://example1.com", "http://example2.com", "http://example3.com"],
 };
 
-app.use(cors(corsOptions));
-
-// Rate limiting middleware with options
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
@@ -26,8 +23,8 @@ const limiter = rateLimit({
 });
 
 // Apply the rate limiter to all requests
+app.use(cors());
 app.use(limiter);
-
 app.use(express.json());
 
 // Define routes

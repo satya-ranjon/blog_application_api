@@ -1,5 +1,12 @@
 const userService = require("../services/userService");
 
+/**
+ * Register a new user.
+ * @param {Object} req - Express request object containing user data in the request body.
+ * @param {Object} res - Express response object to send the registration response.
+ * @param {Function} next - Express next middleware function for error handling.
+ * @returns {void}
+ */
 const registerUser = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
@@ -19,6 +26,13 @@ const registerUser = async (req, res, next) => {
   }
 };
 
+/**
+ * Log in an existing user.
+ * @param {Object} req - Express request object containing user login data in the request body.
+ * @param {Object} res - Express response object to send the login response.
+ * @param {Function} next - Express next middleware function for error handling.
+ * @returns {void}
+ */
 const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -38,4 +52,24 @@ const loginUser = async (req, res, next) => {
   }
 };
 
-module.exports = { registerUser, loginUser };
+/**
+ * Get the user profile based on the authenticated user.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
+ * @returns {void}
+ */
+const userProfile = async (req, res, next) => {
+  try {
+    // Fetch the user profile data based on the authenticated user ID
+    const userProfileData = await userService.userProfile(req.user._id);
+
+    // Respond with the user profile data
+    res.status(200).json(userProfileData);
+  } catch (err) {
+    // Pass the error to the next error-handling middleware
+    next(err);
+  }
+};
+
+module.exports = { registerUser, loginUser, userProfile };

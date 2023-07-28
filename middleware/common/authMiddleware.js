@@ -1,6 +1,7 @@
 const { verify } = require("jsonwebtoken");
 const User = require("../../models/userModel");
-const AppError = require("../utils/AppError");
+const AppError = require("../../utils/AppError");
+const removeRsUnDataFormUser = require("../../utils/removeRsUnDataFormUser");
 
 /**
  * Middleware function to authenticate user based on JWT token in the Authorization header.
@@ -11,8 +12,7 @@ const AppError = require("../utils/AppError");
 const isAuthenticated = async (req, _res, next) => {
   // Check if the Authorization header is present and starts with "Bearer "
   const authHeader =
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer ");
+    req.headers.authorization && req.headers.authorization.startsWith("Bearer");
 
   if (!authHeader) {
     // If Authorization header is missing or not in the right format, return an error.
@@ -23,12 +23,12 @@ const isAuthenticated = async (req, _res, next) => {
 
   try {
     // Extract the token from the Authorization header
-    const token = authHeader.split(" ")[1];
+    const token = req.headers.authorization.split(" ")[1];
 
     // Verify the token using the JWT_SECRET from the environment variables
-    const { id, exp } = verify(token, process.env.JWT_SECRET);
+    const { _id, exp } = verify(token, process.env.JWT_SECRET);
 
-    if (!id) {
+    if (!_id) {
       // If the token does not contain a valid user id, return an error.
       return next(new AppError("Invalid credentials.", 403));
     }
@@ -39,7 +39,7 @@ const isAuthenticated = async (req, _res, next) => {
     }
 
     // Retrieve the user from the database based on the user id from the token
-    const user = await User.findById(id).select("-password");
+    const user = await User.findById(_id);
 
     if (!user) {
       // If the user with the provided id is not found, return an error.
@@ -47,7 +47,7 @@ const isAuthenticated = async (req, _res, next) => {
     }
 
     // Attach the user object to the request for further use in the route handler
-    req.user = user;
+    req.user = removeRsUnDataFormUser(user);
 
     // Call the next middleware or route handler
     next();

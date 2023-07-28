@@ -100,4 +100,36 @@ const loginUser = async (email, password) => {
   }
 };
 
-module.exports = { registerUser, loginUser };
+/**
+ * Fetches user profile by ID.
+ * @param {string} _id - The ID of the user to fetch the profile for.
+ * @returns {Promise<Object>} The user profile object without sensitive data.
+ * @throws {AppError} If the user is not found, throws a custom AppError with a 404 status.
+ * @throws {AppError} If any other error occurs, throws a generic AppError with a 500 status.
+ */
+const userProfile = async (_id) => {
+  try {
+    // Find the user in the database by the provided ID
+    const user = await User.findById(_id);
+    if (!user) {
+      // If the user is not found, throw a custom AppError with a 404 status
+      throw new AppError(
+        "User not found. Please check the provided ID or register for a new account.",
+        404
+      );
+    }
+    // If the user is found, remove sensitive data before returning the user profile
+    return removeRsUnDataFormUser(user);
+  } catch (error) {
+    // Handle any errors that occur during the process
+    if (error instanceof AppError) {
+      // If the error is already an instance of AppError, rethrow it
+      throw error;
+    } else {
+      // If the error is not an instance of AppError, throw a generic AppError with a 500 status
+      throw new AppError("Something went wrong. Please try again later.", 500);
+    }
+  }
+};
+
+module.exports = { registerUser, loginUser, userProfile };

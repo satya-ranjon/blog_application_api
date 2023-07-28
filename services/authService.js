@@ -32,8 +32,9 @@ const passwordCompare = async (password, hashedPassword) => {
  */
 const generateAuthToken = (userId) => {
   // Create a JWT token containing the user ID, signed with the JWT_SECRET and set to expire in 30 hours
+  const expirationTime = Math.floor(Date.now() / 1000) + 60;
   const token = jwt.sign({ _id: userId }, process.env.JWT_SECRET, {
-    expiresIn: "30h",
+    expiresIn: expirationTime,
   });
 
   return token;

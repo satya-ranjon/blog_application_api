@@ -4,6 +4,7 @@ const {
   loginUser,
   userProfile,
   profileUpdate,
+  passwordUpdate,
 } = require("../controllers/userController");
 const validateRegisterInput = require("../middleware/validateRegisterInput ");
 const validateLoginInput = require("../middleware/validateLoginInput");
@@ -21,5 +22,8 @@ router.get("/profile", isAuthenticated, userProfile);
 
 // Route for user profileUpdate
 router.patch("/update-profile", isAuthenticated, profileUpdate);
+
+// Route for user password update
+router.patch("/update-password", isAuthenticated, passwordUpdate);
 
 module.exports = router;

@@ -94,4 +94,33 @@ const profileUpdate = async (req, res, next) => {
   }
 };
 
-module.exports = { registerUser, loginUser, userProfile, profileUpdate };
+/**
+ * Updates the user's password.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
+ */
+const passwordUpdate = async (req, res, next) => {
+  try {
+    // Call the userService.passwordUpdate function to update the user's password
+    const message = await userService.passwordUpdate(
+      req.user._id,
+      req.body.newPassword,
+      req.body.oldPassword
+    );
+
+    // Respond with a success message after successfully updating the password
+    res.status(200).json(message);
+  } catch (err) {
+    // Pass any errors that occur during the process to the next error-handling middleware
+    next(err);
+  }
+};
+
+module.exports = {
+  registerUser,
+  loginUser,
+  userProfile,
+  profileUpdate,
+  passwordUpdate,
+};

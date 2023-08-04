@@ -3,6 +3,7 @@ const {
   registerUser,
   loginUser,
   userProfile,
+  profileUpdate,
 } = require("../controllers/userController");
 const validateRegisterInput = require("../middleware/validateRegisterInput ");
 const validateLoginInput = require("../middleware/validateLoginInput");
@@ -15,7 +16,10 @@ router.post("/register", validateRegisterInput, registerUser);
 // Route for user login
 router.post("/login", validateLoginInput, loginUser);
 
-// Route for user login
+// Route for user profile
 router.get("/profile", isAuthenticated, userProfile);
+
+// Route for user profileUpdate
+router.patch("/update-profile", isAuthenticated, profileUpdate);
 
 module.exports = router;

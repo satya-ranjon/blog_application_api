@@ -132,4 +132,45 @@ const userProfile = async (_id) => {
   }
 };
 
-module.exports = { registerUser, loginUser, userProfile };
+/**
+ * Updates the user's profile information.
+ * @param {string} id - The ID of the user to update.
+ * @param {Object} data - The data containing the fields to update in the user's profile.
+ * @returns {Promise<Object>} A Promise that resolves to the updated user information.
+ * @throws {AppError} If the user with the provided ID is not found, an error with a 404 status will be thrown.
+ * @throws {AppError} If any other error occurs during the process, a generic error with a 500 status will be thrown.
+ */
+const profileUpdate = async (id, data) => {
+  try {
+    // Find the user in the database by the provided ID
+    const user = await User.findById(id);
+    if (!user) {
+      // If the user is not found, throw a custom AppError with a 404 status
+      throw new AppError(
+        "User not found. Please check the provided ID or register for a new account.",
+        404
+      );
+    }
+
+    // Update user properties with the provided data or keep the existing value if data is not provided
+    user.name = data.name || user.name;
+    user.email = data.email || user.email;
+
+    // Save the updated user information back to the database
+    const updateInfo = await user.save();
+
+    // Remove sensitive and unnecessary data from the user before returning
+    return removeRsUnDataFormUser(updateInfo);
+  } catch (error) {
+    // Handle any errors that occur during the process
+    if (error instanceof AppError) {
+      // If the error is already an instance of AppError, rethrow it
+      throw error;
+    } else {
+      // If the error is not an instance of AppError, throw a generic AppError with a 500 status
+      throw new AppError("Something went wrong. Please try again later.", 500);
+    }
+  }
+};
+
+module.exports = { registerUser, loginUser, userProfile, profileUpdate };

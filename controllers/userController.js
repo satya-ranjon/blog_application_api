@@ -1,3 +1,5 @@
+const User = require("../models/userModel");
+const { findById } = require("../models/userModel");
 const userService = require("../services/userService");
 
 /**
@@ -72,4 +74,24 @@ const userProfile = async (req, res, next) => {
   }
 };
 
-module.exports = { registerUser, loginUser, userProfile };
+/**
+ * Handles the profile update for a user.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
+ * @returns {void}
+ */
+const profileUpdate = async (req, res, next) => {
+  try {
+    // The result 'updateInfo' should contain the updated user information.
+    const updateInfo = await userService.profileUpdate(req.user._id, req.body);
+
+    // Respond with the user update profile data
+    res.status(200).json(updateInfo);
+  } catch (err) {
+    // Pass the error to the next error-handling middleware
+    next(err);
+  }
+};
+
+module.exports = { registerUser, loginUser, userProfile, profileUpdate };

@@ -10,18 +10,22 @@ const removeRsUnDataFormUser = require("../../utils/removeRsUnDataFormUser");
  * @param {import("express").NextFunction} next - The Express next middleware function.
  */
 const isAuthenticated = async (req, _res, next) => {
-  // Check if the Authorization header is present and starts with "Bearer "
-  const authHeader =
-    req.headers.authorization && req.headers.authorization.startsWith("Bearer");
-
-  if (!authHeader) {
-    // If Authorization header is missing or not in the right format, return an error.
-    return next(
-      new AppError("Authorization header missing or in the wrong format.", 401)
-    );
-  }
-
   try {
+    // Check if the Authorization header is present and starts with "Bearer "
+    const authHeader =
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer");
+
+    if (!authHeader) {
+      // If Authorization header is missing or not in the right format, return an error.
+      return next(
+        new AppError(
+          "Authorization header missing or in the wrong format.",
+          401
+        )
+      );
+    }
+
     // Extract the token from the Authorization header
     const token = req.headers.authorization.split(" ")[1];
 

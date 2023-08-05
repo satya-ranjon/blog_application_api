@@ -3,6 +3,7 @@ const {
   userProfile,
   profileUpdate,
   passwordUpdate,
+  updateProfilePicture,
 } = require("../controllers/userController");
 
 const router = express.Router();
@@ -15,5 +16,8 @@ router.patch("/update-profile", profileUpdate);
 
 // Route for user password update
 router.patch("/update-password", passwordUpdate);
+
+// Route for user profile picture update
+router.patch("/update-picture", updateProfilePicture);
 
 module.exports = router;

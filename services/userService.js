@@ -1,3 +1,4 @@
+const uploadPicture = require("../middleware/uploadPictureMiddleware");
 const User = require("../models/userModel");
 const AppError = require("../utils/AppError");
 const removeRsUnDataFormUser = require("../utils/removeRsUnDataFormUser");
@@ -128,6 +129,36 @@ const passwordUpdate = async (id, newPassword, oldPassword) => {
 
     // Return an object with a success message
     return { message: "Password Update Successfully" };
+  } catch (error) {
+    // Handle any errors that occur during the process
+    if (error instanceof AppError) {
+      // If the error is already an instance of AppError, rethrow it
+      throw error;
+    } else {
+      // If the error is not an instance of AppError, throw a generic AppError with a 500 status
+      throw new AppError("Something went wrong. Please try again later.", 500);
+    }
+  }
+};
+
+const updateProfilePicture = async (req, file) => {
+  try {
+    const upload = uploadPicture.single("profilePicture");
+    upload(req, res, async (err) => {
+      if (err) {
+        throw new AppError("An unknown error occurred when uploading", 401);
+      }
+      // every thing went well
+      if (req.file) {
+        const updatedUser = await User.findByIdAndUpdate(
+          req.user._id,
+          {
+            avatar: req.file.filename,
+          },
+          { new: true }
+        );
+      }
+    });
   } catch (error) {
     // Handle any errors that occur during the process
     if (error instanceof AppError) {

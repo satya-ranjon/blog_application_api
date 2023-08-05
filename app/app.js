@@ -41,4 +41,3 @@ app.use(catchAllUndefinedRoutes);
 app.use(globalErrorHandler);
 
 module.exports = app;
-// seperate the user & auth / service , controller, routes

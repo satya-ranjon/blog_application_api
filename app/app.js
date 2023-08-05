@@ -6,7 +6,9 @@ const {
   globalErrorHandler,
   catchAllUndefinedRoutes,
 } = require("../middleware/common/errorHandler");
+const authRouter = require("../routers/authRouter");
 const userRouter = require("../routers/userRouter");
+const authMiddleware = require("../middleware/common/authMiddleware");
 
 const app = express();
 dotenv.config();
@@ -28,6 +30,8 @@ app.use(limiter);
 app.use(express.json());
 
 // Define routes
+app.use("/api/auth/", authRouter);
+app.use(authMiddleware);
 app.use("/api/users/", userRouter);
 
 // handling undefined routes
@@ -37,3 +41,4 @@ app.use(catchAllUndefinedRoutes);
 app.use(globalErrorHandler);
 
 module.exports = app;
+// seperate the user & auth / service , controller, routes

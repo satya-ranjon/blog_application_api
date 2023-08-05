@@ -1,29 +1,19 @@
 const express = require("express");
 const {
-  registerUser,
-  loginUser,
   userProfile,
   profileUpdate,
   passwordUpdate,
 } = require("../controllers/userController");
-const validateRegisterInput = require("../middleware/validateRegisterInput ");
-const validateLoginInput = require("../middleware/validateLoginInput");
-const isAuthenticated = require("../middleware/common/authMiddleware");
+
 const router = express.Router();
 
-// Route for user registration
-router.post("/register", validateRegisterInput, registerUser);
-
-// Route for user login
-router.post("/login", validateLoginInput, loginUser);
-
 // Route for user profile
-router.get("/profile", isAuthenticated, userProfile);
+router.get("/profile", userProfile);
 
 // Route for user profileUpdate
-router.patch("/update-profile", isAuthenticated, profileUpdate);
+router.patch("/update-profile", profileUpdate);
 
 // Route for user password update
-router.patch("/update-password", isAuthenticated, passwordUpdate);
+router.patch("/update-password", passwordUpdate);
 
 module.exports = router;
